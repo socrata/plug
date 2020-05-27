@@ -1766,21 +1766,6 @@ defmodule Plug.Conn do
   defp request_url_qs(qs), do: [??, qs]
 end
 
-defimpl Inspect, for: Plug.Conn do
-  def inspect(conn, opts) do
-    conn
-    |> no_secret_key_base()
-    |> no_adapter_data(opts)
-    |> Inspect.Any.inspect(opts)
-  end
-
-  defp no_secret_key_base(%{secret_key_base: nil} = conn), do: conn
-  defp no_secret_key_base(conn), do: %{conn | secret_key_base: :...}
-
-  defp no_adapter_data(conn, %{limit: :infinity}), do: conn
-  defp no_adapter_data(%{adapter: {adapter, _}} = conn, _), do: %{conn | adapter: {adapter, :...}}
-end
-
 defimpl Collectable, for: Plug.Conn do
   def into(conn) do
     IO.warn(
